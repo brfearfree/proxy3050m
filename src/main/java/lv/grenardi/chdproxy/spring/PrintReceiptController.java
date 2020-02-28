@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class PrintReceiptController {
-    @PostMapping("/printReceipt")
+    @PostMapping("/3050m/printReceipt")
     public PrintResult greeting(@RequestParam(value = "dealId", defaultValue = "0") Integer dealId,
                              @RequestParam(value = "userId", defaultValue = "0") Integer userId,
                              @RequestParam(value = "data", defaultValue = "") String data) {
