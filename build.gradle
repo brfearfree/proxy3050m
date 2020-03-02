@@ -20,6 +20,15 @@ dependencies {
 	compile group: 'com.fazecast', name: 'jSerialComm', version: '2.6.0'
 }
 
+jar {
+	manifest {
+		attributes 'Main-Class': 'lv.grenardi.chdproxy.Application'
+	}
+	from {
+		configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+	}
+}
+
 test {
 	useJUnitPlatform()
 }
