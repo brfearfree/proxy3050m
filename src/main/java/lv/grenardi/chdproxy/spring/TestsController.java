@@ -20,12 +20,6 @@ public class TestsController {
         Integer userId = 1;
         Integer dealId = 10;
 
-        System.err.println("----------------");
-        System.err.println(path);
-        System.err.println(Device3050mTestData);
-        System.err.println(Device3050mName);
-        System.err.println("----------------");
-
         // try executing (will fail due to data)
         PrintResult printResult = new PrintResult(dealId, userId, Device3050mTestData,
                 SystemExecutor.ExecuteMacroCommands(path, Device3050mTestData));

@@ -11,7 +11,6 @@ public class FileWriter {
 
             try (FileOutputStream fop = new FileOutputStream(file)) {
 
-
                 // if file doesn't exists, then create it
                 if (!file.exists()) {
                     file.createNewFile();

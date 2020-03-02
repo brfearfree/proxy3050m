@@ -1,13 +1,9 @@
 package lv.grenardi.chdproxy.spring;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Tray {
     public static void initialize(String path){
-
-        System.err.println(path);
 
         if (SystemTray.isSupported()) {
             SystemTray tray = SystemTray.getSystemTray();
