@@ -20,6 +20,12 @@ public class TestsController {
         Integer userId = 1;
         Integer dealId = 10;
 
+        // delete command file if any
+        File oldFile = new File(path + "ma.txt");
+        if(oldFile.exists()){
+            oldFile.delete();
+        }
+
         // try executing (will fail due to data)
         PrintResult printResult = new PrintResult(dealId, userId, Device3050mTestData,
                 SystemExecutor.ExecuteMacroCommands(path, Device3050mTestData));
@@ -34,6 +40,7 @@ public class TestsController {
             if(((st = br.readLine()) != null) && st.equals(Device3050mTestData)){
                 isWriteOk = true;
             }
+            br.close();
 
         }
         catch (Exception e) {
@@ -42,15 +49,28 @@ public class TestsController {
 
         // check if device is on
         boolean isDeviceOnline = false;
+        String portName = "";
         ArrayList<ComDevice> comDevices = ComDevice.listDevices();
         if(comDevices.size() > 0){
             for (ComDevice comDevice : comDevices) {
-                if (comDevice.descriptivePortName.contains(Device3050mName)) {
+                if (comDevice.portDescriptionPortName.equals(Device3050mName)) {
                     isDeviceOnline = true;
+                    portName = comDevice.systemPortName;
                 }
             }
         }
 
-        return new Chd3050mTestResults(printResult, isWriteOk, isDeviceOnline);
+        boolean isDeviceConfigured = false;
+        String configuredPortName = "";
+        // Check if SDRV.ini properly configured
+        if(!portName.equals("")){
+            configuredPortName = Chd3050m.getConfiguredPortName(path);
+
+            if(portName.equals("COM" + configuredPortName)){
+                isDeviceConfigured = true;
+            }
+        }
+
+        return new Chd3050mTestResults(printResult, isWriteOk, isDeviceOnline, isDeviceConfigured, configuredPortName);
     }
 }

@@ -15,7 +15,7 @@ public class Tray {
 
             popup.add(closeItem);
 
-            TrayIcon trayIcon = new TrayIcon(image, "GMS - CHD3050", popup);
+            TrayIcon trayIcon = new TrayIcon(image, "GMS - CHD3050m", popup);
             try {
                 tray.add(trayIcon);
             }
