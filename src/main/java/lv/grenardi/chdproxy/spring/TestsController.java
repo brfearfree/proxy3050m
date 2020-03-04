@@ -1,5 +1,7 @@
 package lv.grenardi.chdproxy.spring;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -7,49 +9,74 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
 
 @RestController
 
 public class TestsController {
+
+    private static final Logger logger = LoggerFactory.getLogger(TestsController.class);
+
+    private final String path;
+    private final String device3050mTestData;
+    private final String device3050mName;
+    private final SystemExecutor systemExecutor;
+
+    public TestsController(
+            @Value("${chd3050m.path}") String path,
+            @Value("${chd3050m.Device3050mTestData}") String Device3050mTestData,
+            @Value("${chd3050m.Device3050mName}") String Device3050mName,
+            SystemExecutor systemExecutor
+    ) {
+        this.path = path;
+        this.device3050mTestData = Device3050mTestData;
+        this.device3050mName = Device3050mName;
+        this.systemExecutor = systemExecutor;
+    }
+
     @GetMapping("/3050m/test")
-    public Chd3050mTestResults test3050m(@Value("${chd3050m.path}") String path,
-                                         @Value("${chd3050m.Device3050mTestData}") String Device3050mTestData,
-                                         @Value("${chd3050m.Device3050mName}") String Device3050mName) {
+    public Chd3050mTestResults test3050m() {
         // mock data
         Integer userId = 1;
         Integer dealId = 10;
 
         // try executing (will fail due to data)
-        PrintResult printResult = new PrintResult(dealId, userId, Device3050mTestData,
-                SystemExecutor.ExecuteMacroCommands(path, Device3050mTestData));
+        PrintResult printResult = new PrintResult(
+                dealId,
+                userId,
+                this.device3050mTestData,
+                this.systemExecutor.executeMacroCommands(this.device3050mTestData)
+        );
 
         // check if file was saved properly
         boolean isWriteOk = false;
-        try{
-            File file = new File(path + "ma.txt");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-
+        File file = new File(path + "ma.txt");
+        // resource should be closed when finished with it
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String st;
-            if(((st = br.readLine()) != null) && st.equals(Device3050mTestData)){
+            if (((st = br.readLine()) != null) && st.equals(this.device3050mTestData)) {
                 isWriteOk = true;
             }
-
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("Error", e);
         }
 
         // check if device is on
-        boolean isDeviceOnline = false;
-        ArrayList<ComDevice> comDevices = ComDevice.listDevices();
-        if(comDevices.size() > 0){
-            for (ComDevice comDevice : comDevices) {
-                if (comDevice.descriptivePortName.contains(Device3050mName)) {
-                    isDeviceOnline = true;
-                }
-            }
-        }
+        //boolean isDeviceOnline = false;
+        //List<ComDevice> comDevices = this.comDevices.list();
+        //if (comDevices.size() > 0) {
+        //    for (ComDevice comDevice : comDevices) {
+        //        if (comDevice.descriptivePortName.contains(this.device3050mName)) {
+        //            isDeviceOnline = true;
+        //        }
+        //    }
+        //}
+
+        // It's more elegant, if using streams syntax.
+        boolean isDeviceOnline = ComDevices.list()
+                .stream()
+                .filter(comDevice -> comDevice.getDescriptivePortName().contains(this.device3050mName))
+                .findAny()
+                .isPresent();
 
         return new Chd3050mTestResults(printResult, isWriteOk, isDeviceOnline);
     }
