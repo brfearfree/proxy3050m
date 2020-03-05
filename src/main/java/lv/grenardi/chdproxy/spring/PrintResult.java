@@ -1,10 +1,13 @@
 package lv.grenardi.chdproxy.spring;
 
+// If you would upgrade to Java 14, then you could use Records.
+// https://openjdk.java.net/jeps/359
 public class PrintResult {
-    final Integer dealId;
-    final Integer userId;
-    final String incomingData;
-    final Results results;
+    // Don't forget visibility modifiers
+    private final Integer dealId;
+    private final Integer userId;
+    private final String incomingData;
+    private final Results results;
 
     public PrintResult(Integer dealId, Integer userId, String incomingData, Results results) {
         this.dealId = dealId;

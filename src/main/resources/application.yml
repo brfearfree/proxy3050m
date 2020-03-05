@@ -1,0 +1,12 @@
+# YAML is better format than .properties
+# Nesting!
+server:
+  port: 55230
+chd3050m:
+  path: C:\\\\chd\\\\
+  # Name convention for configuration properties is usually kebab-case.
+  # In your case:
+  #   device-3050m-name
+  #   device-3050m-test-data
+  Device3050mName: CHD
+  Device3050mTestData: Ok-def
