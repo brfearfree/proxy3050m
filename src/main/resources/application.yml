@@ -8,5 +8,5 @@ chd3050m:
   # In your case:
   #   device-3050m-name
   #   device-3050m-test-data
-  Device3050mName: CHD
-  Device3050mTestData: Ok-def
+  Device3050mName: CHD 7
+  Device3050mTestData: 1,6050,6046,6048,6048,4001

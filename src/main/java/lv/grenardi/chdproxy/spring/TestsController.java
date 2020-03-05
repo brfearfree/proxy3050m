@@ -39,6 +39,12 @@ public class TestsController {
         Integer userId = 1;
         Integer dealId = 10;
 
+        // delete command file if any
+        File oldFile = new File(path + "ma.txt");
+        if(oldFile.exists()){
+            oldFile.delete();
+        }
+
         // try executing (will fail due to data)
         PrintResult printResult = new PrintResult(
                 dealId,
@@ -60,17 +66,6 @@ public class TestsController {
             logger.error("Error", e);
         }
 
-        // check if device is on
-        //boolean isDeviceOnline = false;
-        //List<ComDevice> comDevices = this.comDevices.list();
-        //if (comDevices.size() > 0) {
-        //    for (ComDevice comDevice : comDevices) {
-        //        if (comDevice.descriptivePortName.contains(this.device3050mName)) {
-        //            isDeviceOnline = true;
-        //        }
-        //    }
-        //}
-
         // It's more elegant, if using streams syntax.
         boolean isDeviceOnline = ComDevices.list()
                 .stream()
@@ -78,6 +73,20 @@ public class TestsController {
                 .findAny()
                 .isPresent();
 
-        return new Chd3050mTestResults(printResult, isWriteOk, isDeviceOnline);
+
+        boolean isDeviceConfigured = false;
+        String configuredPortName = "";
+
+        /*
+        // Check if SDRV.ini properly configured
+        if(!portName.equals("")){
+            configuredPortName = Chd3050m.getConfiguredPortName(path);
+
+            if(portName.equals("COM" + configuredPortName)){
+                isDeviceConfigured = true;
+            }
+        }*/
+
+        return new Chd3050mTestResults(printResult, isWriteOk, isDeviceOnline, isDeviceConfigured, configuredPortName);
     }
 }
