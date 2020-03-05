@@ -1,11 +1,18 @@
 package lv.grenardi.chdproxy.spring;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class FileWriter {
-    public void writing(String content, String filename) {
+
+    private static final Logger logger = LoggerFactory.getLogger(FileWriter.class);
+
+    // no state is used in method, can be static.
+    public static void writing(String content, String filename) {
         try {
             File file = new File(filename);
 
@@ -21,14 +28,11 @@ public class FileWriter {
 
                 fop.write(contentInBytes);
                 fop.flush();
-                fop.close();
-
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("Error writing to a file", e);
             }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("Error writing to a file", e);
         }
     }
 }

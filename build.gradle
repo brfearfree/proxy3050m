@@ -5,29 +5,29 @@ plugins {
 }
 
 group = 'lv.grenardi.chdproxy'
-version = '0.1'
+version = '0.0.1-SNAPSHOT'
+// Upgrade to Java 11 - latest LTS version.
+// Java 8 is out-of-support for quite a while already.
 sourceCompatibility = '1.8'
 
 repositories {
 	mavenCentral()
 }
 
+// Be consistent when using syntax.
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation('org.springframework.boot:spring-boot-starter-web')
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
-	compile group: 'com.fazecast', name: 'jSerialComm', version: '2.6.0'
+	// https://stackoverflow.com/questions/44493378/whats-the-difference-between-implementation-and-compile-in-gradle
+	implementation('com.fazecast:jSerialComm:2.6.0')
 }
 
-jar {
-	manifest {
-		attributes 'Main-Class': 'lv.grenardi.chdproxy.Application'
-	}
-	from {
-		configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-	}
-}
+// Custom task to build fatjar not needed.
+// https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/html/#packaging-executable-jars
+// It's by default available via Gradle Sprign Boot plugin.
+// Run: ./gradlew bootJar
 
 test {
 	useJUnitPlatform()
